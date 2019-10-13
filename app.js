@@ -6,7 +6,7 @@ const schema = require("./schema");
 
 app.get("/", async (req, res) => {
   const url =
-    "https://demo-roster.efcsydney.org/api/events?category=english&from=2018-04-01&to=2018-06-30";
+    "https://roster.efcsydney.org/api/events?category=english&from=2018-04-01&to=2018-06-30";
   const response = await fetch(url)
     .then(response => response.json())
     .then(data => {
