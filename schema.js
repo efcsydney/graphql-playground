@@ -1,24 +1,35 @@
-const fetch = require("node-fetch");
-const queryString = require("query-string");
-const {
-  buildSchema,
-  GraphQLSchema,
-  GraphQLInt,
-  GraphQLObjectType,
-  GraphQLList,
-  GraphQLString,
-  GraphQLBoolean
-} = require("graphql");
+const { gql } = require("apollo-server");
 
-const schema = buildSchema(`
+const typeDefs = gql`
   # The root query type
   type Query {
-    events(category: String, from: String, to: String): [Event]
+    events(category: String, from: String, to: String): [Event]!
+    services: [Service]!
+    service(id: Int): Service
+  }
+
+  type Service {
+    id: ID
+    name: String
+    locale: String
+    label: String
+    footnoteLabel: String
+    frequency: String
+    positions: [Position]
+  }
+
+  type Position {
+    id: ID
+    name: String
+    order: Int
+    serviceId: String
+    createdAt: String
+    updatedAt: String
   }
 
   # The meta data for a day
   type ServiceInfo {
-    id: Int
+    id: ID
     footnote: String
     skipService: Boolean
     skipReason: String
@@ -28,11 +39,12 @@ const schema = buildSchema(`
 
   # A day in a service
   type Event {
-    id: Int
+    id: ID
     date: String
     serviceInfo: ServiceInfo
+    positions: [Position]
   }
-`);
+`;
 
 // Information about how to get the data
-module.exports = schema;
+module.exports = typeDefs;
