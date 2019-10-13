@@ -1,6 +1,10 @@
 const { gql } = require("apollo-server");
 
 const typeDefs = gql`
+  directive @deprecated(
+    reason: String = "No longer supported"
+  ) on FIELD_DEFINITION | ENUM_VALUE
+
   """
   The root query type
   """
@@ -55,7 +59,8 @@ const typeDefs = gql`
   """
   type Event {
     id: ID
-    date: String
+    date: String @deprecated(reason: "Use dateString")
+    dateString: String
     serviceInfo: ServiceInfo
     positions: [Position]
     # All volunteers for this day

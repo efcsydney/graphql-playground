@@ -30,6 +30,7 @@ module.exports = {
         })
   },
   Event: {
+    dateString: event => event.date,
     positions: async event => {
       const services = await fetch(`${API_URL}services`)
         .then(response => response.json())
