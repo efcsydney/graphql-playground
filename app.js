@@ -6,16 +6,28 @@ const schema = require("./schema");
 
 app.get("/", async (req, res) => {
   const url =
-    "https://roster.efcsydney.org/api/events?category=english&from=2018-04-01&to=2018-06-30";
+    "https://stg-dev-api.whitechstage.com/config/v1/hosts/4.local.whitechstage.com:8080?languageId=1";
   const response = await fetch(url)
     .then(response => response.json())
-    .then(data => {
-      res.send(JSON.stringify(data.data));
-    });
+    .then(data => res.send(JSON.stringify(data)));
 });
 
-app.use("/graphql", graphqlHttp({ schema, graphiql: true }));
+const rootValue = {
+  events: (root, args, context, info) => {
+    const query = queryString.stringify({
+      ...args
+    });
+    return fetch(`https://roster.efcsydney.org/api/events?${query}`)
+      .then(response => response.json())
+      .then(data => data.data)
+      .catch(e => {
+        throw new Error(e);
+      });
+  }
+};
 
-app.listen(process.env.PORT || 3000, () =>
-  console.log("Example app listening on port 3000!")
+app.use("/graphql", graphqlHttp({ schema, rootValue, graphiql: true }));
+
+app.listen(process.env.PORT || 3005, () =>
+  console.log("Example app listening on port 3005!")
 );
